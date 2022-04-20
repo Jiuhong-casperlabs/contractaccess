@@ -8,12 +8,17 @@ compile_error!("target arch should be wasm32: compile with '--target wasm32-unkn
 // `no_std` environment.
 extern crate alloc;
 
-use alloc::{collections::BTreeMap, string::String, vec};
+use alloc::{
+    collections::BTreeMap,
+    format,
+    string::{String, ToString},
+    vec,
+};
 
 use casper_contract::contract_api::{runtime, storage};
 use casper_types::{
-    runtime_args, CLType, ContractHash, EntryPoint, EntryPointAccess, EntryPointType, EntryPoints,
-    Group, Key, RuntimeArgs,
+    runtime_args, system::CallStackElement, CLType, ContractHash, EntryPoint, EntryPointAccess,
+    EntryPointType, EntryPoints, Group, Key, RuntimeArgs,
 };
 
 pub const GROUP_LABEL: &str = "group_label";
@@ -22,14 +27,86 @@ pub const DEFAULT_MIN_AMOUNT: u128 = 10000000000;
 
 #[no_mangle]
 pub extern "C" fn test1() {
-    let a = runtime::get_call_stack();
-    runtime::put_key("stacks in test1", storage::new_uref(a).into());
+    let stacks = runtime::get_call_stack();
+
+    for (i, el) in stacks.iter().enumerate() {
+        let key_name = format!("stack_ {}!", i.to_string());
+        match el {
+            CallStackElement::Session { account_hash } => {
+                runtime::put_key(&key_name, (*account_hash).into())
+            }
+            CallStackElement::StoredSession {
+                account_hash,
+                contract_hash,
+                contract_package_hash,
+            } => {
+                let mut map: BTreeMap<String, Key> = BTreeMap::new();
+                let key1 = String::from("account_hash_session");
+                let key2 = String::from("contract_package_hash_session");
+                let key3 = String::from("contract_hash_session");
+
+                //store purse into contract named_keys
+                map.insert(key1, (*account_hash).into());
+                map.insert(key2, (*contract_package_hash).into());
+                map.insert(key3, (*contract_hash).into());
+                runtime::put_key(&key_name, storage::new_uref(map).into());
+            }
+            CallStackElement::StoredContract {
+                contract_hash,
+                contract_package_hash,
+            } => {
+                let mut map: BTreeMap<String, Key> = BTreeMap::new();
+                let key2 = String::from("contract_package_hash_session");
+                let key3 = String::from("contract_hash_session");
+                //store purse into contract named_keys
+                map.insert(key2, (*contract_package_hash).into());
+                map.insert(key3, (*contract_hash).into());
+                runtime::put_key(&key_name, storage::new_uref(map).into());
+            }
+        }
+    }
 }
 
 #[no_mangle]
 pub extern "C" fn test2() {
-    let a = runtime::get_call_stack();
-    runtime::put_key("stacks in test2", storage::new_uref(a).into());
+    let stacks = runtime::get_call_stack();
+
+    for (i, el) in stacks.iter().enumerate() {
+        let key_name = format!("stack_ {}!", i.to_string());
+        match el {
+            CallStackElement::Session { account_hash } => {
+                runtime::put_key(&key_name, (*account_hash).into())
+            }
+            CallStackElement::StoredSession {
+                account_hash,
+                contract_hash,
+                contract_package_hash,
+            } => {
+                let mut map: BTreeMap<String, Key> = BTreeMap::new();
+                let key1 = String::from("account_hash_session");
+                let key2 = String::from("contract_package_hash_session");
+                let key3 = String::from("contract_hash_session");
+
+                //store purse into contract named_keys
+                map.insert(key1, (*account_hash).into());
+                map.insert(key2, (*contract_package_hash).into());
+                map.insert(key3, (*contract_hash).into());
+                runtime::put_key(&key_name, storage::new_uref(map).into());
+            }
+            CallStackElement::StoredContract {
+                contract_hash,
+                contract_package_hash,
+            } => {
+                let mut map: BTreeMap<String, Key> = BTreeMap::new();
+                let key2 = String::from("contract_package_hash_session");
+                let key3 = String::from("contract_hash_session");
+                //store purse into contract named_keys
+                map.insert(key2, (*contract_package_hash).into());
+                map.insert(key3, (*contract_hash).into());
+                runtime::put_key(&key_name, storage::new_uref(map).into());
+            }
+        }
+    }
 }
 
 #[no_mangle]
