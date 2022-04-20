@@ -1,38 +1,38 @@
-=============deploy other contract===========================
+=============deploy authorized_contract(hasn\'t authorized yet)===========================
 
 casper-client put-deploy \
 --chain-name casper-test \
 --node-address http://3.208.91.63:7777 \
 --payment-amount 50000000000 \
---session-path /home/jh/mywork/contractaccess/contract/target/wasm32-unknown-unknown/release/other.wasm \
+--session-path /home/jh/mywork/contractaccess/contract/target/wasm32-unknown-unknown/release/authorized_contract.wasm \
 --secret-key /home/jh/keys/test99/secret_key.pem 
 
 => 
-other_contract
-hash-d714705e4232612bc234b3f283b88815208c3155f143fbd08e6896f0cad0d67f
+authorized_contract
+hash-bc9a09a6fc3ce9589f8e80843fbd2020dbacfffee8bc215e88b2e59a58df4ffd
 
-=============deploy main contract===========================
+=============deploy main contract (also authorize above contract)===========================
 
 casper-client put-deploy \
 --chain-name casper-test \
 --node-address http://3.208.91.63:7777 \
---payment-amount 40000000000 \
---session-arg "other_contract:String='contract-d714705e4232612bc234b3f283b88815208c3155f143fbd08e6896f0cad0d67f'" \
+--payment-amount 60000000000 \
+--session-arg "authorized_contract:String='contract-bc9a09a6fc3ce9589f8e80843fbd2020dbacfffee8bc215e88b2e59a58df4ffd'" \
 --session-path /home/jh/mywork/contractaccess/contract/target/wasm32-unknown-unknown/release/contract.wasm \
 --secret-key /home/jh/keys/test99/secret_key.pem 
 
 =>my_contract
-hash-12e2c0f4d157b00dd9faef54819bb9d0713d0e2f86f1f62a6ed1a8199396fc3f
+hash-bd29a4c62605f9c2aa4ce99f92231ef73749301aadfb52d72e41baa8a033d1ed
 
-=============call_access_other from other_contract===========================
+=============call_access_other from authorized_contract===========================
 
 casper-client put-deploy \
 --chain-name casper-test \
 --node-address http://3.208.91.63:7777 \
---payment-amount 5000000000 \
---session-hash hash-d714705e4232612bc234b3f283b88815208c3155f143fbd08e6896f0cad0d67f \
+--payment-amount 1000000000 \
+--session-hash hash-bc9a09a6fc3ce9589f8e80843fbd2020dbacfffee8bc215e88b2e59a58df4ffd \
 --session-entry-point "call_access_other" \
---session-arg "main_contract:String='contract-12e2c0f4d157b00dd9faef54819bb9d0713d0e2f86f1f62a6ed1a8199396fc3f'" \
+--session-arg "main_contract:String='contract-bd29a4c62605f9c2aa4ce99f92231ef73749301aadfb52d72e41baa8a033d1ed'" \
 --secret-key /home/jh/keys/test1/secret_key.pem 
 
 
@@ -42,33 +42,33 @@ casper-client put-deploy \
 --chain-name casper-test \
 --node-address http://3.208.91.63:7777 \
 --payment-amount 5000000000 \
---session-hash hash-12e2c0f4d157b00dd9faef54819bb9d0713d0e2f86f1f62a6ed1a8199396fc3f \
+--session-hash hash-bd29a4c62605f9c2aa4ce99f92231ef73749301aadfb52d72e41baa8a033d1ed \
 --session-entry-point "test2" \
 --secret-key /home/jh/keys/test1/secret_key.pem 
 =>
 "error_message": "Invalid context"
-=============deploy another_contract===========================
+=============deploy unauthorized_contract===========================
 
 casper-client put-deploy \
 --chain-name casper-test \
 --node-address http://3.208.91.63:7777 \
 --payment-amount 40000000000 \
---session-path /home/jh/mywork/contractaccess/contract/target/wasm32-unknown-unknown/release/another.wasm \
+--session-path /home/jh/mywork/contractaccess/contract/target/wasm32-unknown-unknown/release/unauthorized_contract.wasm \
 --secret-key /home/jh/keys/test99/secret_key.pem 
 
 => 
-another_contract
-hash-07b0fdc2d76183c590816f1374a6a91812e6c9828856b74066502219deb27171
+unauthorized_contract
+hash-15560625d5c9eed5ec3527ab6049b766ee82034888ecff8a0097179d7ba20093
 
-=============call_access_other from another_contract===========================
+=============call_access_other from unauthorized_contract===========================
 
 casper-client put-deploy \
 --chain-name casper-test \
 --node-address http://3.208.91.63:7777 \
 --payment-amount 5000000000 \
---session-hash hash-07b0fdc2d76183c590816f1374a6a91812e6c9828856b74066502219deb27171 \
+--session-hash hash-15560625d5c9eed5ec3527ab6049b766ee82034888ecff8a0097179d7ba20093 \
 --session-entry-point "call_access_other" \
---session-arg "main_contract:String='contract-12e2c0f4d157b00dd9faef54819bb9d0713d0e2f86f1f62a6ed1a8199396fc3f'" \
+--session-arg "main_contract:String='contract-bd29a4c62605f9c2aa4ce99f92231ef73749301aadfb52d72e41baa8a033d1ed'" \
 --secret-key /home/jh/keys/test1/secret_key.pem 
 
 =>
