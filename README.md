@@ -45,8 +45,10 @@ casper-client put-deploy \
 --session-hash hash-bd29a4c62605f9c2aa4ce99f92231ef73749301aadfb52d72e41baa8a033d1ed \
 --session-entry-point "test2" \
 --secret-key /home/jh/keys/test1/secret_key.pem 
+
 =>
 "error_message": "Invalid context"
+
 =============deploy unauthorized_contract===========================
 
 casper-client put-deploy \
