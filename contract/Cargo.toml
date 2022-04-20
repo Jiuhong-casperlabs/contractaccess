@@ -15,15 +15,15 @@ doctest = false
 test = false
 
 [[bin]]
-name = "other"
-path = "src/other.rs"
+name = "unauthorized_contract"
+path = "src/unauthorized_contract.rs"
 bench = false
 doctest = false
 test = false
 
 [[bin]]
-name = "another"
-path = "src/another.rs"
+name = "authorized_contract"
+path = "src/authorized_contract.rs"
 bench = false
 doctest = false
 test = false

@@ -72,7 +72,7 @@ pub extern "C" fn test2() {
     let stacks = runtime::get_call_stack();
 
     for (i, el) in stacks.iter().enumerate() {
-        let key_name = format!("stack_ {}!", i.to_string());
+        let key_name = format!("stack_{}", i.to_string());
         match el {
             CallStackElement::Session { account_hash } => {
                 runtime::put_key(&key_name, (*account_hash).into())
@@ -111,8 +111,9 @@ pub extern "C" fn test2() {
 
 #[no_mangle]
 pub extern "C" fn call() {
-    let other_contract_str: String = runtime::get_named_arg("other_contract");
-    let other_contract_hash = ContractHash::from_formatted_str(&other_contract_str).unwrap();
+    let authorized_contract_str: String = runtime::get_named_arg("authorized_contract");
+    let authorized_contract_hash =
+        ContractHash::from_formatted_str(&authorized_contract_str).unwrap();
 
     let named_keys: BTreeMap<String, Key> = BTreeMap::new();
 
@@ -151,7 +152,7 @@ pub extern "C" fn call() {
     runtime::put_key(GROUP_UREF_NAME, admin_group[0].into());
 
     let _: () = runtime::call_contract(
-        other_contract_hash,
+        authorized_contract_hash,
         "add_urefs",
         runtime_args! {"uref" => admin_group[1]},
     );

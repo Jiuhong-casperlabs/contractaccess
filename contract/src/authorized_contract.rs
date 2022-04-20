@@ -63,5 +63,5 @@ pub extern "C" fn call() {
     entry_points.add_entry_point(entry_point_2);
 
     let (contract_hash, _) = storage::new_contract(entry_points, Some(named_keys), None, None);
-    runtime::put_key("other_contract", contract_hash.into());
+    runtime::put_key("authorized_contract", contract_hash.into());
 }
